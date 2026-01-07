@@ -11,23 +11,16 @@ export const metadata: Metadata = {
   title: "Dagamdev - Desarrollador Web & Trader",
   description:
     "Portfolio profesional de desarrollador web full-stack y trader. Especializado en Next.js, React, TypeScript y estrategias de trading.",
-  generator: "v0.app",
+  other: {
+    "google-adsense-account": "ca-pub-7544389116802597",
+  },
   icons: {
     icon: [
       {
-        url: "/icon-light-32x32.png",
-        media: "(prefers-color-scheme: light)",
-      },
-      {
-        url: "/icon-dark-32x32.png",
-        media: "(prefers-color-scheme: dark)",
-      },
-      {
-        url: "/icon.svg",
-        type: "image/svg+xml",
+        url: "images/icono.png",
+        type: "image/png",
       },
     ],
-    apple: "/apple-icon.png",
   },
 }
 
