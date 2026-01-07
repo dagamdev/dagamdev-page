@@ -27,48 +27,19 @@ export default function Home() {
 
   const projects = [
     {
-      title: "E-commerce Platform",
-      description:
-        "Full-stack e-commerce solution with Next.js, Stripe integration, and real-time inventory management.",
-      category: "Web Development",
-      link: "#",
-      tags: ["Next.js", "TypeScript", "Stripe", "PostgreSQL"],
-    },
-    {
-      title: "Trading Dashboard",
-      description: "Real-time trading analytics dashboard with interactive charts and portfolio tracking.",
+      title: "Gestión Masaniello",
+      description: "Gestión de capital Masaniello, la mítica plantilla en Excel ahora en una web moderna y eficiente.",
       category: "Trading",
-      link: "#",
-      tags: ["React", "WebSocket", "D3.js", "TradingView"],
+      link: "https://masaniello.dagamdev.site",
+      tags: ["Next.js", "TypeScript", "v0.dev", "Tailwind CSS", 'Zustand'],
     },
     {
-      title: "SaaS Management Tool",
-      description: "Comprehensive project management platform with team collaboration features.",
-      category: "Web Development",
-      link: "#",
-      tags: ["Next.js", "Prisma", "tRPC", "Tailwind"],
-    },
-    {
-      title: "Crypto Trading Bot",
-      description: "Automated trading bot with advanced algorithms and risk management strategies.",
+      title: "Calculadora de interés compuesto",
+      description: "Calcula los montos para cada operación de un capital inicial con interés compuesto, además puedes ajustar cuanto quieres re invertir y asegurar por cada operación.",
       category: "Trading",
-      link: "#",
-      tags: ["Python", "Node.js", "API Integration", "ML"],
-    },
-    {
-      title: "Portfolio Tracker",
-      description: "Multi-asset portfolio tracking app with performance analytics and alerts.",
-      category: "Trading",
-      link: "#",
-      tags: ["React Native", "Firebase", "REST API"],
-    },
-    {
-      title: "Design System",
-      description: "Component library and design system for scalable web applications.",
-      category: "Web Development",
-      link: "#",
-      tags: ["React", "Storybook", "CSS", "TypeScript"],
-    },
+      link: "https://interest-calculator.dagamdev.site",
+      tags: ["Next.js", "TypeScript", "v0.dev", "Tailwind CSS", 'Masaniello', 'Zustand'],
+    }
   ]
 
   const scrollToProjects = () => {
@@ -259,7 +230,7 @@ export default function Home() {
             ¡Hablemos!
           </p>
           <div className="flex flex-wrap justify-center gap-4 mb-12">
-            <Button size="lg" variant="outline" className="gap-2 bg-transparent" asChild>
+            <Button size="lg" className="gap-2" asChild>
               <a href="https://github.com/dagamdev" target="_blank" rel="noopener noreferrer">
                 <Github className="w-4 h-4" />
                 GitHub
