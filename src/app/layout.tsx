@@ -8,9 +8,8 @@ const _geist = Geist({ subsets: ["latin"] })
 const _geistMono = Geist_Mono({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Dagamdev - Desarrollador Web & Trader",
-  description:
-    "Portfolio profesional de desarrollador web full-stack y trader. Especializado en Next.js, React, TypeScript y estrategias de trading.",
+  title: "Dagamdev - Desarrollador & Trader",
+  description: "Portfolio profesional de desarrollador web full-stack y trader. Especializado en Next.js, React, TypeScript y Trading de opciones binarias.",
   other: {
     "google-adsense-account": "ca-pub-7544389116802597",
   },
