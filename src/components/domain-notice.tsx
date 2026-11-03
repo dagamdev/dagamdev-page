@@ -46,7 +46,7 @@ export function DomainNotice() {
   return (
     <div
       role="alert"
-      className="fixed bottom-4 inset-x-4 sm:left-auto sm:right-6 sm:bottom-6 sm:max-w-md z-[60] animate-in fade-in slide-in-from-bottom-4 duration-500"
+      className="fixed bottom-4 inset-x-4 sm:left-auto sm:right-6 sm:bottom-6 sm:max-w-md z-60 animate-in fade-in slide-in-from-bottom-4 duration-500"
     >
       <div className="relative rounded-xl border-2 border-primary/40 bg-card text-card-foreground shadow-2xl p-5">
         <button

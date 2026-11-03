@@ -61,7 +61,7 @@ export default function Home() {
               </div>
               <div className="relative">
                 <div className="relative aspect-square max-w-md mx-auto">
-                  <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-accent/20 rounded-3xl blur-3xl"></div>
+                  <div className="absolute inset-0 bg-linear-to-br from-primary/20 to-accent/20 rounded-3xl blur-3xl"></div>
                   <Card className="relative bg-card/50 backdrop-blur-sm border-2">
                     <CardContent className="p-8 flex items-center justify-center">
                       <Image
