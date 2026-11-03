@@ -30,14 +30,14 @@ export default function Home() {
       title: "Gestión Masaniello",
       description: "Gestión de capital Masaniello, la mítica plantilla en Excel ahora en una web moderna y eficiente.",
       category: "Trading",
-      link: "https://masaniello.dagamdev.site",
+      link: "https://masaniello.dagam.dev",
       tags: ["Next.js", "TypeScript", "v0.dev", "Tailwind CSS", 'Zustand'],
     },
     {
       title: "Calculadora de interés compuesto",
       description: "Calcula los montos para cada operación de un capital inicial con interés compuesto, además puedes ajustar cuanto quieres re invertir y asegurar por cada operación.",
       category: "Trading",
-      link: "https://interest-calculator.dagamdev.site",
+      link: "https://interest-calculator.dagam.dev",
       tags: ["Next.js", "TypeScript", "v0.dev", "Tailwind CSS", 'Masaniello', 'Zustand'],
     }
   ]
