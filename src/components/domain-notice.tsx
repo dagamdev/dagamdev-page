@@ -3,11 +3,13 @@
 import { ArrowUpRight, Info, X } from "lucide-react"
 import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
+import { SITE_DOMAIN } from "@/lib/site"
 
-// Dominio principal nuevo (sin https:// ni barra final)
-const NEW_DOMAIN = "dagam.dev"
+// Dominio principal nuevo (definido en src/lib/site.ts)
+const NEW_DOMAIN = SITE_DOMAIN
 // Texto opcional con la fecha en que el dominio actual dejará de funcionar. Déjalo vacío si no hay fecha.
-const SHUTDOWN_DATE = ""
+// El dominio antiguo caduca el 2027-01-02 23:59:59 UTC
+const SHUTDOWN_DATE = "2 de enero de 2027"
 
 const STORAGE_KEY = "domain-notice-dismissed"
 
