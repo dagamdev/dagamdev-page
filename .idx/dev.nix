@@ -21,7 +21,7 @@
     workspace = {
       # Runs when a workspace is first created with this `dev.nix` file
       onCreate = {
-        npm-install = "npm ci --no-audit --prefer-offline --no-progress --timing";
+        pnpm-install = "pnpm install --frozen-lockfile";
         # Open editors for the following files by default, if they exist:
         default.openFiles = [
           # Cover all the variations of language, src-dir, router (app/pages)
@@ -38,7 +38,7 @@
       enable = true;
       previews = {
         web = {
-          command = ["npm" "run" "dev" "--" "--port" "$PORT" "--hostname" "0.0.0.0"];
+          command = ["pnpm" "dev" "--port" "$PORT" "--hostname" "0.0.0.0"];
           manager = "web";
         };
       };

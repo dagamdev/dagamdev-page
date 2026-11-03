@@ -1,0 +1,5 @@
+allowBuilds:
+  sharp: false
+
+# Seguridad: no instalar versiones publicadas hace menos de 1 día (mitiga ataques de supply chain)
+minimumReleaseAge: 1440
