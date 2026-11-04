@@ -1,8 +1,16 @@
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { SiteHeader } from "@/components/site-header"
-import { GITHUB_URL, TELEGRAM_URL } from "@/lib/site"
-import { AlertTriangle, ArrowUpRight, Code2, Github, Send, TrendingUp } from "lucide-react"
+import {
+  CONTACT_EMAIL,
+  GITHUB_URL,
+  SITE_DESCRIPTION,
+  SITE_NAME,
+  SITE_TITLE,
+  SITE_URL,
+  TELEGRAM_URL,
+} from "@/lib/site"
+import { AlertTriangle, ArrowUpRight, Code2, Github, Mail, Send, TrendingUp } from "lucide-react"
 import Image from "next/image"
 
 const projects = [
@@ -23,11 +31,53 @@ const projects = [
   },
 ]
 
+// Datos estructurados (schema.org) para que Google entienda quién eres y qué proyectos tienes
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": `${SITE_URL}/#website`,
+      url: SITE_URL,
+      name: SITE_TITLE,
+      description: SITE_DESCRIPTION,
+      inLanguage: "es",
+      publisher: { "@id": `${SITE_URL}/#person` },
+    },
+    {
+      "@type": "Person",
+      "@id": `${SITE_URL}/#person`,
+      name: SITE_NAME,
+      url: SITE_URL,
+      image: `${SITE_URL}/images/icono.png`,
+      email: `mailto:${CONTACT_EMAIL}`,
+      jobTitle: "Desarrollador web full-stack",
+      knowsAbout: ["Next.js", "React", "TypeScript", "Tailwind CSS", "Trading", "Opciones binarias"],
+      sameAs: [GITHUB_URL, TELEGRAM_URL],
+    },
+    ...projects.map((project) => ({
+      "@type": "WebApplication",
+      name: project.title,
+      description: project.description,
+      url: project.link,
+      applicationCategory: "FinanceApplication",
+      operatingSystem: "Web",
+      inLanguage: "es",
+      offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+      author: { "@id": `${SITE_URL}/#person` },
+    })),
+  ],
+}
+
 export default function Home() {
   const year = new Date().getFullYear()
 
   return (
     <div className="min-h-screen">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }}
+      />
       <SiteHeader />
 
       <main>
@@ -213,6 +263,12 @@ export default function Home() {
                   Telegram
                 </a>
               </Button>
+              <Button size="lg" variant="outline" className="gap-2 bg-transparent" asChild>
+                <a href={`mailto:${CONTACT_EMAIL}`}>
+                  <Mail className="w-4 h-4" />
+                  {CONTACT_EMAIL}
+                </a>
+              </Button>
             </div>
           </div>
         </section>
@@ -243,6 +299,13 @@ export default function Home() {
               className="text-muted-foreground hover:text-primary transition-colors"
             >
               <Send className="w-5 h-5" />
+            </a>
+            <a
+              href={`mailto:${CONTACT_EMAIL}`}
+              aria-label="Enviar un correo a Dagamdev"
+              className="text-muted-foreground hover:text-primary transition-colors"
+            >
+              <Mail className="w-5 h-5" />
             </a>
           </div>
         </div>

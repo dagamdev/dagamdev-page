@@ -8,3 +8,4 @@ export const SITE_DESCRIPTION =
 
 export const GITHUB_URL = "https://github.com/dagamdev"
 export const TELEGRAM_URL = "https://t.me/dagamdev"
+export const CONTACT_EMAIL = "contact@dagam.dev"
