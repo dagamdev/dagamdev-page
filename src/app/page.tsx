@@ -10,16 +10,28 @@ import {
   SITE_URL,
   TELEGRAM_URL,
 } from "@/lib/site"
-import { AlertTriangle, ArrowUpRight, Code2, Github, Mail, Send, TrendingUp } from "lucide-react"
+import { AlertTriangle, ArrowUpRight, Code2, Github, Mail, Send, Sparkles, TrendingUp } from "lucide-react"
 import Image from "next/image"
 
 const projects = [
+  {
+    title: "Binarytacora",
+    description:
+      "Bitácora de trading de escritorio: registra sola cada operación de IQ Option, Exnova, Casa Trade y Pocket Option con las velas de antes, durante y después. Diario, estadísticas y límites. Gratis para Windows.",
+    category: "Trading",
+    link: "https://binarytacora.dagam.dev",
+    tags: ["Tauri", "Svelte", "Rust", "SQLite", "TypeScript", "Windows"],
+    builtWith: "Claude Code",
+    platform: "desktop",
+  },
   {
     title: "Gestión Masaniello",
     description: "Gestión de capital Masaniello, la mítica plantilla en Excel ahora en una web moderna y eficiente.",
     category: "Trading",
     link: "https://masaniello.dagam.dev",
-    tags: ["Next.js", "TypeScript", "v0.dev", "Tailwind CSS", "Zustand"],
+    tags: ["Next.js", "TypeScript", "Tailwind CSS", "Zustand"],
+    builtWith: "Claude Code",
+    platform: "web",
   },
   {
     title: "Calculadora de interés compuesto",
@@ -27,7 +39,9 @@ const projects = [
       "Calcula los montos para cada operación de un capital inicial con interés compuesto, además puedes ajustar cuánto quieres reinvertir y asegurar por cada operación.",
     category: "Trading",
     link: "https://interest-calculator.dagam.dev",
-    tags: ["Next.js", "TypeScript", "v0.dev", "Tailwind CSS", "Masaniello", "Zustand"],
+    tags: ["Next.js", "TypeScript", "Tailwind CSS", "Masaniello", "Zustand"],
+    builtWith: "v0",
+    platform: "web",
   },
 ]
 
@@ -52,16 +66,16 @@ const jsonLd = {
       image: `${SITE_URL}/images/icono.png`,
       email: `mailto:${CONTACT_EMAIL}`,
       jobTitle: "Desarrollador web full-stack",
-      knowsAbout: ["Next.js", "React", "TypeScript", "Tailwind CSS", "Trading", "Opciones binarias"],
+      knowsAbout: ["Next.js", "React", "TypeScript", "Tailwind CSS", "Svelte", "Tauri", "Trading", "Opciones binarias"],
       sameAs: [GITHUB_URL, TELEGRAM_URL],
     },
     ...projects.map((project) => ({
-      "@type": "WebApplication",
+      "@type": project.platform === "desktop" ? "SoftwareApplication" : "WebApplication",
       name: project.title,
       description: project.description,
       url: project.link,
       applicationCategory: "FinanceApplication",
-      operatingSystem: "Web",
+      operatingSystem: project.platform === "desktop" ? "Windows 10, Windows 11" : "Web",
       inLanguage: "es",
       offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
       author: { "@id": `${SITE_URL}/#person` },
@@ -140,6 +154,8 @@ export default function Home() {
                   Soy desarrollador web full-stack. Fuera del código me gusta el trading de opciones binarias, y esa
                   afición es la que inspira la mayoría de mis proyectos: herramientas sencillas que resuelven problemas
                   que yo mismo tengo al operar, como llevar la gestión de capital o calcular el monto de cada operación.
+                  En mi flujo de trabajo uso herramientas de IA como Claude Code y v0 para construir más rápido, sin
+                  dejar de revisar y entender cada línea que publico.
                 </p>
                 <p className="text-muted-foreground leading-relaxed">
                   No soy asesor financiero, no doy mentorías ni vendo estrategias: lo que hago es software. Puedes ver
@@ -191,10 +207,10 @@ export default function Home() {
             <div className="text-center mb-16">
               <h2 className="text-3xl sm:text-4xl font-bold mb-4">Proyectos Destacados</h2>
               <p className="text-muted-foreground max-w-2xl mx-auto">
-                Herramientas web para traders que he diseñado y desarrollado
+                Herramientas web y de escritorio para traders que he diseñado y desarrollado
               </p>
             </div>
-            <div className="grid md:grid-cols-2 gap-6 max-w-5xl mx-auto">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
               {projects.map((project) => (
                 <a
                   key={project.link}
@@ -227,17 +243,21 @@ export default function Home() {
                           </span>
                         ))}
                       </div>
+                      <p className="mt-4 flex items-center gap-1.5 text-xs text-muted-foreground">
+                        <Sparkles className="w-3.5 h-3.5 text-accent" aria-hidden="true" />
+                        Hecho con {project.builtWith}
+                      </p>
                     </CardContent>
                   </Card>
                 </a>
               ))}
             </div>
-            <div className="mt-12 max-w-5xl mx-auto flex gap-3 rounded-xl border border-border bg-muted/40 p-4 text-sm text-muted-foreground">
+            <div className="mt-12 max-w-6xl mx-auto flex gap-3 rounded-xl border border-border bg-muted/40 p-4 text-sm text-muted-foreground">
               <AlertTriangle className="w-5 h-5 shrink-0 text-destructive" aria-hidden="true" />
               <p className="leading-relaxed">
                 <strong className="text-foreground">Aviso de riesgo:</strong> el trading de opciones binarias conlleva
-                un alto riesgo de pérdida de capital. Estas herramientas son calculadoras con fines informativos y
-                educativos; no constituyen asesoramiento financiero ni recomendaciones de inversión.
+                un alto riesgo de pérdida de capital. Estas herramientas tienen fines informativos y educativos; no
+                constituyen asesoramiento financiero ni recomendaciones de inversión.
               </p>
             </div>
           </div>
