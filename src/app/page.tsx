@@ -38,7 +38,7 @@ const projects = [
     description:
       "Calcula los montos para cada operación de un capital inicial con interés compuesto, además puedes ajustar cuánto quieres reinvertir y asegurar por cada operación.",
     category: "Trading",
-    link: "https://interest-calculator.dagam.dev",
+    link: "https://interes.dagam.dev",
     tags: ["Next.js", "TypeScript", "Tailwind CSS", "Masaniello", "Zustand"],
     builtWith: "v0",
     platform: "web",
