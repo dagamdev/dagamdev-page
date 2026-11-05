@@ -1,7 +1,7 @@
 "use client"
 
 import { ArrowUpRight, Info, X } from "lucide-react"
-import { useEffect, useState } from "react"
+import { useState, useSyncExternalStore } from "react"
 import { Button } from "@/components/ui/button"
 import { SITE_DOMAIN } from "@/lib/site"
 
@@ -13,35 +13,42 @@ const SHUTDOWN_DATE = "2 de enero de 2027"
 
 const STORAGE_KEY = "domain-notice-dismissed"
 
+// Actualiza el enlace si cambia el ancla (#projects, #contact…)
+function subscribe(onChange: () => void) {
+  window.addEventListener("hashchange", onChange)
+  return () => window.removeEventListener("hashchange", onChange)
+}
+
+/** URL equivalente en el dominio nuevo, o null si no hay que mostrar el aviso */
+function getTargetUrl(): string | null {
+  const host = window.location.hostname.replace(/^www\./, "")
+  // Ya estamos en el dominio nuevo: no mostrar nada
+  if (host === NEW_DOMAIN) return null
+
+  try {
+    if (sessionStorage.getItem(STORAGE_KEY) === "1") return null
+  } catch {}
+
+  // Conserva la ruta y el ancla actuales al saltar al dominio nuevo
+  const { pathname, search, hash } = window.location
+  return `https://${NEW_DOMAIN}${pathname}${search}${hash}`
+}
+
+// En el servidor no se sabe el dominio: no se renderiza el aviso
+const getServerTargetUrl = () => null
+
 export function DomainNotice() {
-  const [visible, setVisible] = useState(false)
-  const [targetUrl, setTargetUrl] = useState(`https://${NEW_DOMAIN}`)
-
-  useEffect(() => {
-    const host = window.location.hostname.replace(/^www\./, "")
-    // Ya estamos en el dominio nuevo: no mostrar nada
-    if (host === NEW_DOMAIN) return
-
-    let dismissed = false
-    try {
-      dismissed = sessionStorage.getItem(STORAGE_KEY) === "1"
-    } catch {}
-    if (dismissed) return
-
-    // Conserva la ruta y el ancla actuales al saltar al dominio nuevo
-    const { pathname, search, hash } = window.location
-    setTargetUrl(`https://${NEW_DOMAIN}${pathname}${search}${hash}`)
-    setVisible(true)
-  }, [])
+  const targetUrl = useSyncExternalStore(subscribe, getTargetUrl, getServerTargetUrl)
+  const [dismissed, setDismissed] = useState(false)
 
   const dismiss = () => {
-    setVisible(false)
+    setDismissed(true)
     try {
       sessionStorage.setItem(STORAGE_KEY, "1")
     } catch {}
   }
 
-  if (!visible) return null
+  if (!targetUrl || dismissed) return null
 
   return (
     <div
