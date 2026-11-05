@@ -22,16 +22,16 @@ export default async function OpengraphImage() {
           alignItems: "center",
           gap: 64,
           padding: 80,
-          background: "linear-gradient(135deg, #0d1f17 0%, #12372a 100%)",
-          color: "#f2f7f4",
+          background: "#0c0d10",
+          color: "#f2f3f5",
         }}
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={logoSrc} width={320} height={320} alt="" />
         <div style={{ display: "flex", flexDirection: "column" }}>
           <div style={{ fontSize: 88, fontWeight: 700 }}>Dagamdev</div>
-          <div style={{ fontSize: 44, color: "#6ee7a8", marginTop: 8 }}>Desarrollador Web & Trader</div>
-          <div style={{ fontSize: 30, color: "#a3b8ad", marginTop: 32 }}>{SITE_DOMAIN}</div>
+          <div style={{ fontSize: 44, color: "#53cc91", marginTop: 8 }}>Desarrollador Web & Trader</div>
+          <div style={{ fontSize: 30, color: "#8a909b", marginTop: 32 }}>{SITE_DOMAIN}</div>
         </div>
       </div>
     ),

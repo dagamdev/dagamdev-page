@@ -1,5 +1,3 @@
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
 import { SiteHeader } from "@/components/site-header"
 import {
   CONTACT_EMAIL,
@@ -10,39 +8,107 @@ import {
   SITE_URL,
   TELEGRAM_URL,
 } from "@/lib/site"
-import { AlertTriangle, ArrowUpRight, Code2, Github, Mail, Send, Sparkles, TrendingUp } from "lucide-react"
+import { cn } from "@/lib/utils"
+import { AlertTriangle, ArrowUpRight, Github, Send } from "lucide-react"
 import Image from "next/image"
+import type { ReactNode } from "react"
 
-const projects = [
+type Project = {
+  title: string
+  description: string
+  link: string
+  tags: string[]
+  builtWith: string
+  platform: "web" | "desktop"
+  /** Texto del distintivo de plataforma en la tarjeta */
+  platformLabel: string
+  /** Texto del botón principal */
+  cta: string
+  /** Nombre base de las capturas en public/images/projects/: <slug>-light.webp y <slug>-dark.webp (1440×900) */
+  image: string
+  imageAlt: string
+  featured?: boolean
+}
+
+const projects: Project[] = [
   {
     title: "Binarytacora",
     description:
-      "Bitácora de trading de escritorio: registra sola cada operación de IQ Option, Exnova, Casa Trade y Pocket Option con las velas de antes, durante y después. Diario, estadísticas y límites. Gratis para Windows.",
-    category: "Trading",
+      "Bitácora de trading que registra sola cada operación de IQ Option, Exnova, Casa Trade y Pocket Option con las velas de antes, durante y después. Diario, estadísticas y límites.",
     link: "https://binarytacora.dagam.dev",
-    tags: ["Tauri", "Svelte", "Rust", "SQLite", "TypeScript", "Windows"],
+    tags: ["Tauri", "Svelte", "Rust", "SQLite", "TypeScript"],
     builtWith: "Claude Code",
     platform: "desktop",
+    platformLabel: "App de escritorio · Windows",
+    cta: "Descargar gratis",
+    image: "binarytacora",
+    imageAlt: "Captura de la web de Binarytacora: «Cada operación, con el mercado que la rodeaba»",
+    featured: true,
   },
   {
     title: "Gestión Masaniello",
-    description: "Gestión de capital Masaniello, la mítica plantilla en Excel ahora en una web moderna y eficiente.",
-    category: "Trading",
+    description:
+      "La mítica plantilla de Excel del método Masaniello, convertida en una web moderna: te dice cuánto invertir en cada operación para cerrar el ciclo con el objetivo.",
     link: "https://masaniello.dagam.dev",
     tags: ["Next.js", "TypeScript", "Tailwind CSS", "Zustand"],
     builtWith: "Claude Code",
     platform: "web",
+    platformLabel: "Web",
+    cta: "Abrir",
+    image: "masaniello",
+    imageAlt: "Captura de Gestión Masaniello: calculadora del método Masaniello",
   },
   {
     title: "Calculadora de interés compuesto",
     description:
-      "Calcula los montos para cada operación de un capital inicial con interés compuesto, además puedes ajustar cuánto quieres reinvertir y asegurar por cada operación.",
-    category: "Trading",
+      "Calcula el monto de cada operación a partir de un capital inicial con interés compuesto. Ajusta cuánto reinviertes y cuánto aseguras en cada paso.",
     link: "https://interes.dagam.dev",
-    tags: ["Next.js", "TypeScript", "Tailwind CSS", "Masaniello", "Zustand"],
+    tags: ["Next.js", "TypeScript", "Tailwind CSS", "Zustand"],
     builtWith: "v0",
     platform: "web",
+    platformLabel: "Web",
+    cta: "Abrir",
+    image: "interes",
+    imageAlt: "Captura de la calculadora de interés compuesto: tabla de montos por operación",
   },
+]
+
+const shotSrc = (project: Project, theme: "light" | "dark") => `/images/projects/${project.image}-${theme}.webp`
+
+const featuredProject = projects.find((project) => project.featured)
+const otherProjects = projects.filter((project) => !project.featured)
+
+const timeline = [
+  {
+    when: "2020",
+    title: "Bots de Discord",
+    text: "Un amigo me enseñó a crear bots y me enganché. Llegué a tener un bot verificado por Discord.",
+  },
+  {
+    when: "2022",
+    title: "Bootcamp full-stack",
+    text: "React en el front, Express en el back. Mi primera base formal de desarrollo web.",
+  },
+  {
+    when: "Después",
+    title: "Autodidacta",
+    text: "TypeScript, Next.js, MongoDB, Tailwind y Astro, aprendidos construyendo proyectos propios.",
+  },
+]
+
+const currentStack = ["Next.js", "React", "TypeScript", "Tailwind", "Svelte", "Tauri", "Rust", "SQLite"]
+
+// Velas decorativas del hero: dirección, desplazamiento desde abajo, cuerpo y mechas (px)
+const candles = [
+  { up: false, offset: 40, body: 50, wickTop: 14, wickBottom: 10 },
+  { up: true, offset: 30, body: 40, wickTop: 10, wickBottom: 12 },
+  { up: true, offset: 56, body: 36, wickTop: 16, wickBottom: 8 },
+  { up: false, offset: 48, body: 30, wickTop: 8, wickBottom: 14 },
+  { up: true, offset: 70, body: 56, wickTop: 12, wickBottom: 10 },
+  { up: true, offset: 110, body: 44, wickTop: 18, wickBottom: 8 },
+  { up: false, offset: 96, body: 26, wickTop: 8, wickBottom: 12 },
+  { up: true, offset: 130, body: 60, wickTop: 14, wickBottom: 10 },
+  { up: true, offset: 176, body: 48, wickTop: 20, wickBottom: 10, last: true },
 ]
 
 // Datos estructurados (schema.org) para que Google entienda quién eres y qué proyectos tienes
@@ -74,6 +140,7 @@ const jsonLd = {
       name: project.title,
       description: project.description,
       url: project.link,
+      screenshot: [shotSrc(project, "light"), shotSrc(project, "dark")].map((src) => `${SITE_URL}${src}`),
       applicationCategory: "FinanceApplication",
       operatingSystem: project.platform === "desktop" ? "Windows 10, Windows 11" : "Web",
       inLanguage: "es",
@@ -82,6 +149,81 @@ const jsonLd = {
     })),
   ],
 }
+
+function SectionLabel({ children }: { children: ReactNode }) {
+  return <p className="mb-3 font-mono text-[13px] text-primary">{children}</p>
+}
+
+function TagList({ tags, label }: { tags: string[]; label: string }) {
+  return (
+    <ul aria-label={label} className="flex flex-wrap gap-1.5 font-mono text-xs text-muted-foreground">
+      {tags.map((tag) => (
+        <li key={tag} className="rounded-md border border-border-strong px-2.5 py-1.5">
+          {tag}
+        </li>
+      ))}
+    </ul>
+  )
+}
+
+function WindowDots({ className }: { className?: string }) {
+  return (
+    <span aria-hidden="true" className="flex gap-1.5">
+      {[0, 1, 2].map((dot) => (
+        <span key={dot} className={cn("size-2.5 rounded-full", className)} />
+      ))}
+    </span>
+  )
+}
+
+/** Captura del proyecto dentro de un marco de navegador */
+function BrowserShot({ project, priority }: { project: Project; priority?: boolean }) {
+  const host = new URL(project.link).host
+
+  return (
+    <div className="overflow-hidden rounded-t-xl border border-b-0 border-border-strong">
+      <div className="flex items-center gap-3 border-b border-border-strong bg-secondary px-3.5 py-2.5">
+        <WindowDots className="bg-window-dot" />
+        <span className="truncate font-mono text-xs text-subtle">{host}</span>
+      </div>
+      {/* Una captura por tema; se alternan con CSS para seguir también al botón de tema, no solo al sistema */}
+      {(["light", "dark"] as const).map((theme) => (
+        <Image
+          key={theme}
+          src={shotSrc(project, theme)}
+          alt={project.imageAlt}
+          width={1440}
+          height={900}
+          sizes={project.featured ? "(min-width: 1024px) 720px, 100vw" : "(min-width: 1024px) 560px, 100vw"}
+          className={cn("h-auto w-full", theme === "light" ? "block dark:hidden" : "hidden dark:block")}
+          priority={priority}
+        />
+      ))}
+    </div>
+  )
+}
+
+function ProjectLink({ project, primary }: { project: Project; primary?: boolean }) {
+  return (
+    <a
+      href={project.link}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label={`${project.cta}: ${project.title}`}
+      className={cn(
+        "inline-flex items-center gap-2 font-semibold text-[15px] transition-colors",
+        primary
+          ? "rounded-xl bg-primary px-5 py-3.5 text-primary-foreground hover:bg-primary/90"
+          : "rounded-[10px] border border-border-strong px-4 py-3 hover:bg-accent",
+      )}
+    >
+      {project.cta}
+      <ArrowUpRight className="size-4" aria-hidden="true" />
+    </a>
+  )
+}
+
+const pill = "rounded-full px-3 py-1.5 text-[13px]"
 
 export default function Home() {
   const year = new Date().getFullYear()
@@ -94,240 +236,234 @@ export default function Home() {
       />
       <SiteHeader />
 
-      <main>
-        {/* Hero Section */}
-        <section className="pt-32 pb-20 px-4 sm:px-6 lg:px-8">
-          <div className="max-w-7xl mx-auto">
-            <div className="grid lg:grid-cols-2 gap-12 items-center">
-              <div>
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent/20 text-foreground text-sm mb-6">
-                  <span className="w-2 h-2 bg-accent rounded-full animate-pulse"></span>
-                  Disponible para proyectos
-                </div>
-                <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold mb-6 text-balance">
-                  Desarrollador Web & Trader
-                </h1>
-                <p className="text-lg sm:text-xl text-muted-foreground mb-8 leading-relaxed">
-                  Construyo aplicaciones web con Next.js, React y TypeScript. Me apasiona el trading de opciones
-                  binarias, y por eso muchos de mis proyectos son herramientas pensadas para traders.
-                </p>
-                <div className="flex flex-wrap gap-4">
-                  <Button size="lg" className="gap-2" asChild>
-                    <a href="#projects">
-                      Ver Proyectos
-                      <ArrowUpRight className="w-4 h-4" />
-                    </a>
-                  </Button>
-                  <Button size="lg" variant="outline" asChild>
-                    <a href="#contact">Contactar</a>
-                  </Button>
-                </div>
-              </div>
-              <div className="relative">
-                <div className="relative aspect-square max-w-md mx-auto">
-                  <div className="absolute inset-0 bg-linear-to-br from-primary/20 to-accent/20 rounded-3xl blur-3xl"></div>
-                  <Card className="relative bg-card/50 backdrop-blur-sm border-2">
-                    <CardContent className="p-8 flex items-center justify-center">
-                      <Image
-                        src="/images/icono.png"
-                        alt="Logo de Dagamdev: velas japonesas con una flecha ascendente"
-                        width={400}
-                        height={400}
-                        className="w-full h-auto"
-                        priority
-                      />
-                    </CardContent>
-                  </Card>
-                </div>
-              </div>
+      <main id="top" className="pt-18">
+        {/* Hero */}
+        <section className="mx-auto flex max-w-300 flex-wrap items-center gap-14 px-6 pt-24 pb-22">
+          <div className="min-w-0 flex-[1_1_520px]">
+            <p className="mb-7 inline-flex items-center gap-2.5 rounded-full border border-border-strong px-3.5 py-2 font-mono text-[13px] text-muted-foreground">
+              <span aria-hidden="true" className="size-2 rounded-full bg-candle-up" />
+              Disponible para proyectos
+            </p>
+            <h1 className="mb-6 text-[clamp(44px,6vw,76px)] leading-[1.02] font-bold tracking-[-0.035em] text-balance">
+              Software para traders, hecho por un trader.
+            </h1>
+            <p className="mb-9 max-w-140 text-[19px] leading-relaxed text-muted-foreground">
+              Soy David, desarrollador web full-stack. Construyo herramientas web y de escritorio que resuelven los
+              problemas que yo mismo tengo al operar opciones binarias.
+            </p>
+            <div className="flex flex-wrap gap-3">
+              <a
+                href="#projects"
+                className="inline-flex items-center gap-2.5 rounded-xl bg-primary px-6 py-4 font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
+              >
+                Ver proyectos
+                <ArrowUpRight className="size-4.5" aria-hidden="true" />
+              </a>
+              <a
+                href="#contact"
+                className="inline-flex items-center rounded-xl border border-border-strong px-6 py-4 font-semibold transition-colors hover:bg-accent"
+              >
+                Contactar
+              </a>
             </div>
           </div>
-        </section>
 
-        {/* About Section */}
-        <section id="about" className="py-20 px-4 sm:px-6 lg:px-8 bg-muted/30">
-          <div className="max-w-7xl mx-auto">
-            <div className="grid md:grid-cols-2 gap-12">
-              <div>
-                <h2 className="text-3xl sm:text-4xl font-bold mb-6">Sobre mí</h2>
-                <p className="text-muted-foreground leading-relaxed mb-6">
-                  Soy desarrollador web full-stack. Fuera del código me gusta el trading de opciones binarias, y esa
-                  afición es la que inspira la mayoría de mis proyectos: herramientas sencillas que resuelven problemas
-                  que yo mismo tengo al operar, como llevar la gestión de capital o calcular el monto de cada operación.
-                  En mi flujo de trabajo uso herramientas de IA como Claude Code y v0 para construir más rápido, sin
-                  dejar de revisar y entender cada línea que publico.
-                </p>
-                <p className="text-muted-foreground leading-relaxed">
-                  No soy asesor financiero, no doy mentorías ni vendo estrategias: lo que hago es software. Puedes ver
-                  parte de mi trabajo en{" "}
-                  <a
-                    href={GITHUB_URL}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-primary underline-offset-4 hover:underline"
-                  >
-                    GitHub
-                  </a>
-                  .
-                </p>
-              </div>
-              <div className="grid gap-6">
-                <Card className="border-2 hover:border-primary transition-colors">
-                  <CardContent className="p-6">
-                    <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
-                      <Code2 className="w-6 h-6 text-primary" />
-                    </div>
-                    <h3 className="font-semibold text-lg mb-2">Desarrollo Web</h3>
-                    <p className="text-sm text-muted-foreground leading-relaxed">
-                      Aplicaciones con Next.js, React, TypeScript y Tailwind CSS, enfocadas en el rendimiento y en una
-                      buena experiencia de usuario.
-                    </p>
-                  </CardContent>
-                </Card>
-                <Card className="border-2 hover:border-accent transition-colors">
-                  <CardContent className="p-6">
-                    <div className="w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center mb-4">
-                      <TrendingUp className="w-6 h-6 text-accent" />
-                    </div>
-                    <h3 className="font-semibold text-lg mb-2">Herramientas para trading</h3>
-                    <p className="text-sm text-muted-foreground leading-relaxed">
-                      Convierto métodos de gestión de capital, como Masaniello o el interés compuesto, en aplicaciones
-                      web fáciles de usar desde cualquier dispositivo.
-                    </p>
-                  </CardContent>
-                </Card>
-              </div>
+          {/* Panel decorativo con velas */}
+          <div
+            aria-hidden="true"
+            className="min-w-0 max-w-130 flex-[1_1_400px] overflow-hidden rounded-[20px] border border-border bg-card"
+          >
+            <div className="flex items-center justify-between border-b border-border px-4.5 py-3.5 font-mono text-xs text-subtle">
+              <span>~/dagamdev</span>
+              <WindowDots className="bg-border-strong" />
             </div>
-          </div>
-        </section>
-
-        {/* Projects Section */}
-        <section id="projects" className="py-20 px-4 sm:px-6 lg:px-8">
-          <div className="max-w-7xl mx-auto">
-            <div className="text-center mb-16">
-              <h2 className="text-3xl sm:text-4xl font-bold mb-4">Proyectos Destacados</h2>
-              <p className="text-muted-foreground max-w-2xl mx-auto">
-                Herramientas web y de escritorio para traders que he diseñado y desarrollado
-              </p>
+            <div className="flex h-75 items-end justify-between gap-2 bg-[linear-gradient(var(--grid-line)_1px,transparent_1px)] bg-size-[100%_50px] px-6 py-7">
+              {candles.map((candle, index) => {
+                const color = candle.last ? "bg-primary" : candle.up ? "bg-candle-up" : "bg-candle-down"
+                return (
+                  <div key={index} className="flex flex-1 flex-col items-center" style={{ marginBottom: candle.offset }}>
+                    <div className={cn("w-0.5", color)} style={{ height: candle.wickTop }} />
+                    <div className={cn("w-full rounded-xs", color)} style={{ height: candle.body }} />
+                    <div className={cn("w-0.5", color)} style={{ height: candle.wickBottom }} />
+                  </div>
+                )
+              })}
             </div>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-              {projects.map((project) => (
-                <a
-                  key={project.link}
-                  href={project.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group block h-full rounded-xl focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
-                >
-                  <Card className="h-full group-hover:border-primary transition-all duration-300 group-hover:shadow-lg">
-                    <CardContent className="p-6">
-                      <div className="flex items-start justify-between mb-4">
-                        <span className="text-xs font-medium px-3 py-1 rounded-full bg-primary/10 text-primary">
-                          {project.category}
-                        </span>
-                        <span
-                          aria-hidden="true"
-                          className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center transition-colors group-hover:bg-primary group-hover:text-primary-foreground"
-                        >
-                          <ArrowUpRight className="w-4 h-4" />
-                        </span>
-                      </div>
-                      <h3 className="font-semibold text-lg mb-2 group-hover:text-primary transition-colors">
-                        {project.title}
-                      </h3>
-                      <p className="text-sm text-muted-foreground mb-4 leading-relaxed">{project.description}</p>
-                      <div className="flex flex-wrap gap-2">
-                        {project.tags.map((tag) => (
-                          <span key={tag} className="text-xs px-2 py-1 rounded bg-muted text-muted-foreground">
-                            {tag}
-                          </span>
-                        ))}
-                      </div>
-                      <p className="mt-4 flex items-center gap-1.5 text-xs text-muted-foreground">
-                        <Sparkles className="w-3.5 h-3.5 text-accent" aria-hidden="true" />
-                        Hecho con {project.builtWith}
-                      </p>
-                    </CardContent>
-                  </Card>
-                </a>
+            <div className="flex flex-wrap gap-x-5 gap-y-2 border-t border-border px-4.5 py-4 font-mono text-xs text-subtle">
+              {["next.js", "react", "svelte", "tauri", "rust", "typescript"].map((tech) => (
+                <span key={tech}>{tech}</span>
               ))}
             </div>
-            <div className="mt-12 max-w-6xl mx-auto flex gap-3 rounded-xl border border-border bg-muted/40 p-4 text-sm text-muted-foreground">
-              <AlertTriangle className="w-5 h-5 shrink-0 text-destructive" aria-hidden="true" />
-              <p className="leading-relaxed">
-                <strong className="text-foreground">Aviso de riesgo:</strong> el trading de opciones binarias conlleva
-                un alto riesgo de pérdida de capital. Estas herramientas tienen fines informativos y educativos; no
+          </div>
+        </section>
+
+        {/* Proyectos */}
+        <section id="projects" className="border-t border-border">
+          <div className="mx-auto max-w-300 px-6 py-24">
+            <div className="mb-12 flex flex-wrap items-end justify-between gap-4">
+              <div>
+                <SectionLabel>01 / Proyectos</SectionLabel>
+                <h2 className="text-[clamp(32px,4vw,48px)] font-bold tracking-[-0.03em]">Herramientas que uso cada día</h2>
+              </div>
+              <p className="max-w-105 leading-relaxed text-muted-foreground">
+                Gratis, en español y pensadas para opciones binarias. Web y escritorio.
+              </p>
+            </div>
+
+            {featuredProject && (
+              <article className="mb-6 grid overflow-hidden rounded-3xl border border-border bg-card lg:grid-cols-[minmax(0,1.65fr)_minmax(0,1fr)]">
+                <div className="min-w-0 bg-muted px-4 pt-4 sm:px-7 sm:pt-7">
+                  <BrowserShot project={featuredProject} priority />
+                </div>
+                <div className="flex min-w-0 flex-col gap-4.5 p-7 sm:p-9">
+                  <div className="flex flex-wrap gap-2">
+                    <span className={cn(pill, "bg-badge font-medium text-badge-foreground")}>Destacado</span>
+                    <span className={cn(pill, "bg-secondary text-muted-foreground")}>{featuredProject.platformLabel}</span>
+                  </div>
+                  <h3 className="text-[34px] font-bold tracking-[-0.02em]">{featuredProject.title}</h3>
+                  <p className="leading-[1.65] text-muted-foreground">{featuredProject.description}</p>
+                  <TagList tags={featuredProject.tags} label={`Tecnologías de ${featuredProject.title}`} />
+                  <p className="text-[13px] text-subtle">Hecho con {featuredProject.builtWith}</p>
+                  <div className="mt-auto pt-2">
+                    <ProjectLink project={featuredProject} primary />
+                  </div>
+                </div>
+              </article>
+            )}
+
+            <div className="grid gap-6 md:grid-cols-2">
+              {otherProjects.map((project) => (
+                <article key={project.link} className="flex flex-col overflow-hidden rounded-3xl border border-border bg-card">
+                  <div className="bg-muted px-4 pt-4 sm:px-6 sm:pt-6">
+                    <BrowserShot project={project} />
+                  </div>
+                  <div className="flex grow flex-col gap-4 p-7 sm:p-8">
+                    <span className={cn(pill, "self-start bg-secondary text-muted-foreground")}>{project.platformLabel}</span>
+                    <h3 className="text-[26px] font-bold tracking-[-0.02em]">{project.title}</h3>
+                    <p className="leading-[1.65] text-muted-foreground">{project.description}</p>
+                    <TagList tags={project.tags} label={`Tecnologías de ${project.title}`} />
+                    <div className="mt-auto flex flex-wrap items-center justify-between gap-3 pt-2">
+                      <span className="text-[13px] text-subtle">Hecho con {project.builtWith}</span>
+                      <ProjectLink project={project} />
+                    </div>
+                  </div>
+                </article>
+              ))}
+            </div>
+
+            <div
+              role="note"
+              className="mt-8 flex items-start gap-3.5 rounded-[14px] border border-border-strong bg-card px-5 py-4.5 text-sm leading-relaxed text-muted-foreground"
+            >
+              <AlertTriangle className="mt-0.5 size-5 shrink-0 text-candle-down" aria-hidden="true" />
+              <p>
+                <strong className="text-foreground">Aviso de riesgo:</strong> el trading de opciones binarias conlleva un
+                alto riesgo de pérdida de capital. Estas herramientas tienen fines informativos y educativos; no
                 constituyen asesoramiento financiero ni recomendaciones de inversión.
               </p>
             </div>
           </div>
         </section>
 
-        {/* Contact Section */}
-        <section id="contact" className="py-20 px-4 sm:px-6 lg:px-8 bg-muted/30">
-          <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-3xl sm:text-4xl font-bold mb-6">¿Listo para colaborar?</h2>
-            <p className="text-muted-foreground mb-8 text-lg">
-              Estoy disponible para proyectos de desarrollo web y colaboraciones interesantes. ¡Hablemos!
+        {/* Sobre mí */}
+        <section id="about" className="border-t border-border bg-section-alt">
+          <div className="mx-auto flex max-w-300 flex-wrap gap-16 px-6 py-24">
+            <div className="min-w-0 flex-[1_1_400px]">
+              <SectionLabel>02 / Sobre mí</SectionLabel>
+              <h2 className="mb-6 text-[clamp(32px,4vw,48px)] font-bold tracking-[-0.03em]">Empecé con un bot de Discord.</h2>
+              <div className="space-y-4.5 text-[17px] leading-[1.7] text-muted-foreground">
+                <p>
+                  Soy David, desarrollador web full-stack. Fuera del código opero opciones binarias, y esa afición inspira
+                  casi todo lo que construyo: herramientas sencillas para problemas que yo mismo tengo al operar.
+                </p>
+                <p>
+                  Uso IA como Claude Code y v0 para construir más rápido, sin dejar de revisar y entender cada línea que
+                  publico. Puedes ver parte de mi trabajo en{" "}
+                  <a
+                    href={GITHUB_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-foreground underline decoration-primary underline-offset-4 hover:text-primary"
+                  >
+                    GitHub
+                  </a>
+                  .
+                </p>
+                <p>No soy asesor financiero, no doy mentorías ni vendo estrategias: lo que hago es software.</p>
+              </div>
+            </div>
+
+            <ol className="flex min-w-0 flex-[1_1_460px] flex-col">
+              {timeline.map((item) => (
+                <li key={item.title} className="relative ml-2 border-l border-border-strong pb-9 pl-7">
+                  <span
+                    aria-hidden="true"
+                    className="absolute top-1.5 -left-1.5 size-2.75 rounded-full border-2 border-timeline-dot bg-section-alt"
+                  />
+                  <p className="mb-1.5 font-mono text-[13px] text-subtle">{item.when}</p>
+                  <h3 className="mb-2 text-xl font-semibold">{item.title}</h3>
+                  <p className="text-[15px] leading-[1.65] text-muted-foreground">{item.text}</p>
+                </li>
+              ))}
+              <li className="relative ml-2 border-l border-transparent pl-7">
+                <span aria-hidden="true" className="absolute top-1.25 -left-1.75 size-3.5 rounded-full bg-primary" />
+                <p className="mb-1.5 font-mono text-[13px] text-primary">Hoy</p>
+                <h3 className="mb-2 text-xl font-semibold">Herramientas para traders</h3>
+                <p className="mb-4 text-[15px] leading-[1.65] text-muted-foreground">
+                  Apps web con Next.js y apps de escritorio con Tauri, Svelte y Rust.
+                </p>
+                <TagList tags={currentStack} label="Stack actual" />
+              </li>
+            </ol>
+          </div>
+        </section>
+
+        {/* Contacto */}
+        <section id="contact" className="border-t border-border">
+          <div className="mx-auto max-w-300 px-6 py-28 text-center">
+            <SectionLabel>03 / Contacto</SectionLabel>
+            <h2 className="mb-5 text-[clamp(36px,5vw,60px)] font-bold tracking-[-0.03em] text-balance">
+              ¿Tienes una idea? Hablemos.
+            </h2>
+            <p className="mx-auto mb-9 max-w-130 text-lg leading-relaxed text-muted-foreground">
+              Disponible para proyectos de desarrollo web y colaboraciones.
             </p>
-            <div className="flex flex-wrap justify-center gap-4">
-              <Button size="lg" className="gap-2" asChild>
-                <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer">
-                  <Github className="w-4 h-4" />
-                  GitHub
-                </a>
-              </Button>
-              <Button size="lg" variant="outline" className="gap-2 bg-transparent" asChild>
-                <a href={TELEGRAM_URL} target="_blank" rel="noopener noreferrer">
-                  <Send className="w-4 h-4" />
-                  Telegram
-                </a>
-              </Button>
-              <Button size="lg" variant="outline" className="gap-2 bg-transparent" asChild>
-                <a href={`mailto:${CONTACT_EMAIL}`}>
-                  <Mail className="w-4 h-4" />
-                  {CONTACT_EMAIL}
-                </a>
-              </Button>
+            <a
+              href={`mailto:${CONTACT_EMAIL}`}
+              className="mb-9 inline-block border-b-2 border-primary pb-1 text-[clamp(24px,3.4vw,40px)] font-semibold tracking-[-0.02em] break-all transition-colors hover:text-primary"
+            >
+              {CONTACT_EMAIL}
+            </a>
+            <div className="flex flex-wrap justify-center gap-3">
+              <a
+                href={GITHUB_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2.5 rounded-xl border border-border-strong px-5 py-3.5 font-medium transition-colors hover:bg-accent"
+              >
+                <Github className="size-4.5" aria-hidden="true" />
+                GitHub
+              </a>
+              <a
+                href={TELEGRAM_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2.5 rounded-xl border border-border-strong px-5 py-3.5 font-medium transition-colors hover:bg-accent"
+              >
+                <Send className="size-4.5" aria-hidden="true" />
+                Telegram
+              </a>
             </div>
           </div>
         </section>
       </main>
 
-      {/* Footer */}
-      <footer className="py-8 px-4 sm:px-6 lg:px-8 border-t border-border">
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
-          <div className="flex items-center gap-3">
-            <Image src="/images/icono.png" alt="" width={32} height={32} className="rounded-lg" />
-            <span className="text-sm text-muted-foreground">© {year} Dagamdev. Todos los derechos reservados.</span>
-          </div>
-          <div className="flex gap-4">
-            <a
-              href={GITHUB_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="GitHub de Dagamdev"
-              className="text-muted-foreground hover:text-primary transition-colors"
-            >
-              <Github className="w-5 h-5" />
-            </a>
-            <a
-              href={TELEGRAM_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Telegram de Dagamdev"
-              className="text-muted-foreground hover:text-primary transition-colors"
-            >
-              <Send className="w-5 h-5" />
-            </a>
-            <a
-              href={`mailto:${CONTACT_EMAIL}`}
-              aria-label="Enviar un correo a Dagamdev"
-              className="text-muted-foreground hover:text-primary transition-colors"
-            >
-              <Mail className="w-5 h-5" />
-            </a>
-          </div>
+      <footer className="border-t border-border">
+        <div className="mx-auto flex max-w-300 flex-wrap items-center justify-between gap-3 px-6 py-7 text-sm text-subtle">
+          <span className="flex items-center gap-2.5">
+            <Image src="/images/icono.png" alt="" width={24} height={24} className="rounded-md" />© {year} Dagamdev
+          </span>
+          <span className="font-mono text-xs">dagam.dev</span>
         </div>
       </footer>
     </div>

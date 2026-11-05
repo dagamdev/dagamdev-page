@@ -4,11 +4,11 @@ import { Menu, Moon, Sun, X } from "lucide-react"
 import Image from "next/image"
 import { useTheme } from "next-themes"
 import { useEffect, useRef, useState } from "react"
-import { Button } from "@/components/ui/button"
+import { CONTACT_EMAIL } from "@/lib/site"
 
 const links = [
-  { href: "#about", label: "Sobre mí" },
   { href: "#projects", label: "Proyectos" },
+  { href: "#about", label: "Sobre mí" },
   { href: "#contact", label: "Contacto" },
 ]
 
@@ -16,9 +16,9 @@ export function SiteHeader() {
   const { resolvedTheme, setTheme } = useTheme()
   const [menuOpen, setMenuOpen] = useState(false)
 
-  const navRef = useRef<HTMLElement>(null)
-
   const toggleTheme = () => setTheme(resolvedTheme === "dark" ? "light" : "dark")
+
+  const navRef = useRef<HTMLElement>(null)
 
   // Con el menú abierto, cerrarlo al tocar/hacer clic fuera de la barra o al pulsar Escape
   useEffect(() => {
@@ -40,56 +40,78 @@ export function SiteHeader() {
   }, [menuOpen])
 
   return (
-    <nav ref={navRef} className="fixed top-0 w-full bg-background/80 backdrop-blur-sm z-50 border-b border-border">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          <a href="#" className="flex items-center gap-3">
-            <Image src="/images/icono.png" alt="" width={40} height={40} className="rounded-lg" priority />
-            <span className="font-semibold text-lg">Dagamdev</span>
-          </a>
-          <div className="hidden md:flex items-center gap-8">
-            {links.map((link) => (
-              <a key={link.href} href={link.href} className="text-sm hover:text-primary transition-colors">
-                {link.label}
-              </a>
-            ))}
-          </div>
-          <div className="flex items-center gap-1">
-            {/* Los iconos se alternan con CSS para que no haya destello al cargar */}
-            <Button variant="ghost" size="icon" onClick={toggleTheme} aria-label="Cambiar tema claro/oscuro" className="cursor-pointer">
-              <Moon className="w-5 h-5 dark:hidden" />
-              <Sun className="w-5 h-5 hidden dark:block" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="md:hidden cursor-pointer"
-              onClick={() => setMenuOpen((open) => !open)}
-              aria-label={menuOpen ? "Cerrar menú" : "Abrir menú"}
-              aria-expanded={menuOpen}
-              aria-controls="mobile-menu"
+    <header ref={navRef} className="fixed top-0 z-50 w-full border-b border-border bg-background/85 backdrop-blur-md">
+      <div className="mx-auto flex h-18 max-w-300 items-center justify-between gap-4 px-6">
+        <a href="#top" className="flex items-center gap-3 text-xl font-bold tracking-tight">
+          <Image src="/images/icono.png" alt="" width={36} height={36} className="rounded-lg" priority />
+          dagamdev
+        </a>
+
+        <nav aria-label="Principal" className="hidden items-center gap-2 md:ml-auto md:flex">
+          {links.map((link) => (
+            <a
+              key={link.href}
+              href={link.href}
+              className="rounded-lg px-3.5 py-3 text-[15px] text-muted-foreground transition-colors hover:text-foreground"
             >
-              {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-            </Button>
-          </div>
+              {link.label}
+            </a>
+          ))}
+          <a
+            href={`mailto:${CONTACT_EMAIL}`}
+            className="ml-2 rounded-[10px] bg-primary px-4.5 py-3 text-[15px] font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
+          >
+            Escríbeme
+          </a>
+        </nav>
+
+        <div className="flex items-center gap-1 md:-mr-2">
+          {/* Los iconos se alternan con CSS para que no haya destello al cargar */}
+          <button
+            type="button"
+            onClick={toggleTheme}
+            aria-label="Cambiar tema claro/oscuro"
+            className="flex size-11 cursor-pointer items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+          >
+            <Moon className="size-5 dark:hidden" />
+            <Sun className="hidden size-5 dark:block" />
+          </button>
+          <button
+            type="button"
+            className="flex size-11 cursor-pointer items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-accent hover:text-foreground md:hidden"
+            onClick={() => setMenuOpen((open) => !open)}
+            aria-label={menuOpen ? "Cerrar menú" : "Abrir menú"}
+            aria-expanded={menuOpen}
+            aria-controls="mobile-menu"
+          >
+            {menuOpen ? <X className="size-5" /> : <Menu className="size-5" />}
+          </button>
         </div>
       </div>
+
       {menuOpen && (
-        <div id="mobile-menu" className="md:hidden border-t border-border bg-background">
-          <div className="px-4 py-2 flex flex-col">
+        <nav id="mobile-menu" aria-label="Principal" className="border-t border-border bg-background md:hidden">
+          <div className="flex flex-col px-6 py-2">
             {links.map((link) => (
               <a
                 key={link.href}
                 href={link.href}
                 onClick={() => setMenuOpen(false)}
-                className="py-3 text-sm hover:text-primary transition-colors"
+                className="py-3 text-muted-foreground transition-colors hover:text-foreground"
               >
                 {link.label}
               </a>
             ))}
+            <a
+              href={`mailto:${CONTACT_EMAIL}`}
+              onClick={() => setMenuOpen(false)}
+              className="my-3 rounded-[10px] bg-primary px-4.5 py-3 text-center font-semibold text-primary-foreground"
+            >
+              Escríbeme
+            </a>
           </div>
-        </div>
+        </nav>
       )}
-    </nav>
+    </header>
   )
 }
